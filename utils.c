@@ -1,18 +1,18 @@
 #include "utils.h"
 
 int strLen(char* src) {
-    int len = 0;
-    while (src[len] != '\0'){
+    int len = 0; // longitud
+    while (src[len] != '\0'){ // Mientras el caracter actual no sea el último de un char, incrementar a len en 1
         len++;
     }
     return len;
 }
 
 char* strDup(char* src) {
-    int size = strLen(src);
-    char* str2 = (char*) malloc(sizeof(char) * size);
+    int size = strLen(src); // calculo la longitud de src
+    char* str2 = (char*) malloc(sizeof(char) * size); // dedico los size espacios de memoria necesarios para copiar src
     for(int i=0; i<size; i++){
-        str2[i] = src[i];
+        str2[i] = src[i]; // Copio el i-ésimo caracter de mi string en la copia
     }
     return str2;
 }
@@ -94,10 +94,15 @@ void keysPredictPrintAux(struct node* n, int level) {
 // Auxiliar functions
 
 struct node* findNodeInLevel(struct node** list, char character) {
-
-    // COMPLETAR
-
-    return 0;
+    struct node* lista = list; // Hago una copia de la lista
+    struct node* coincidencia = NULL; // Acá guardo el nodo que contenga el caracter
+    while(lista != NULL){ // Recorre cada nodo en la lista hasta llegar a NULL
+        if(lista->character == character){ // Si el caracter del nodo actual coincide con el buscado...
+            coincidencia = lista; // ...guardamos el nodo en coincidencia
+        }
+        lista = lista->next; // Avanzamos
+    }
+    return coincidencia;
 }
 
 struct node* addSortedNewNodeInLevel(struct node** list, char character) {
