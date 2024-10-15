@@ -1,17 +1,20 @@
 #include "utils.h"
 
 int strLen(char* src) {
-
-    // COMPLETAR
-
-    return 0;
+    int len = 0;
+    while (src[len] != '\0'){
+        len++;
+    }
+    return len;
 }
 
 char* strDup(char* src) {
-
-    // COMPLETAR
-
-    return 0;
+    int size = strLen(src);
+    char* str2 = (char*) malloc(sizeof(char) * size);
+    for(int i=0; i<size; i++){
+        str2[i] = src[i];
+    }
+    return str2;
 }
 
 // Keys Predict

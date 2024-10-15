@@ -19,6 +19,7 @@ void findAndPrintAll(struct keysPredict* kt, char* word ) {
     printf("Find: %s = %i\n", word, result==0);
 }
 
+
 int main() {
 
     // COMPLETAR
