@@ -18,7 +18,7 @@ void findAndPrintAll(struct keysPredict* kt, char* word ) {
     struct node* result = keysPredictFind(kt, word);
     printf("Find: %s = %i\n", word, result==0);
 }
-
+ 
 
 int main() {
 
@@ -30,7 +30,7 @@ int main() {
 
     // strLen
     int len = strLen("hola");
-    printf("strDup(\"hola\") -> \"%i\"\n", len);
+    printf("strLen(\"hola\") -> \"%i\"\n", len);
     printf("\n");
 
     // strDup

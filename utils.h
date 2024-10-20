@@ -50,6 +50,8 @@ struct node* addSortedNewNodeInLevel(struct node** list, char character);
 
 void deleteArrayOfWords(char** words, int wordsCount);
 
+int findPositionInAlphabet(char character);
+
 // --- Strings ----------------------------------------------------------------
 
 int strLen(char* src);
