@@ -28,22 +28,27 @@ struct keysPredict* keysPredictNew() {
 }
 
 void keysPredictAddWord(struct keysPredict* kt, char* word) {
-    //hay que ver como empezamos.
-    struct node* currentNode = kt->first;
-    for(int i = 0; i < strLen(word); i++){
-        currentNode = addSortedNewNodeInLevel(&currentNode,word[i]);
-        kt->totalKeys++;
+    struct node** currentNodePtr = &kt->first; // apuntamos al primer nodo
 
-        if(i == strLen(word) - 1){ // Si estamos en el final...
-            currentNode->end = 1; // Marcamos el fin
-            currentNode->word = strDup(word);
-            kt->totalWords++; // Una palabra más al total
+    for (int i = 0; i < strLen(word); i++) { // Por cada carácter...
+        char letter = word[i]; // Letra actual
+
+        struct node* foundNode = findNodeInLevel(currentNodePtr, letter); // Busco si la letra existe como nodo
+        if (foundNode == NULL) { // Si no existe...
+            *currentNodePtr = addSortedNewNodeInLevel(currentNodePtr, letter); // ...agrego el nodo
+            foundNode = findNodeInLevel(currentNodePtr,letter); // Me posiciono en el nuevo nodo
+            kt->totalKeys++;
         }
-        currentNode = currentNode->down;
+
+        if (i == strLen(word) - 1 && foundNode->end != 1) { // Si estamos en el final de la palabra...
+            foundNode->end = 1; // ...marco el final de la palabra
+            foundNode->word = strDup(word); //Guardamos una copia de word
+            kt->totalWords++;
+        }
+        currentNodePtr = &foundNode->down; // Bajamos al siguiente nivel
     }
-    
-    
 }
+
 
 void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
     kt->totalWords--; // Quito una palabra de la cantidad total
@@ -137,7 +142,7 @@ struct node* addSortedNewNodeInLevel(struct node** list, char character) {
 
     int charPos = findPosInAlphabet(character);
 
-    if(lista == 0){ // posible caso en el cual la lista esté vacía
+    if(lista == NULL){ // posible caso en el cual la lista esté vacía
        *list = newNode;
         return newNode;
     }

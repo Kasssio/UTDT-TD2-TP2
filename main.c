@@ -42,7 +42,8 @@ int main() {
     // keysPredict
     struct keysPredict* kt = keysPredictNew();
     // keysPredict - crear un diccionario
-    keysPredictAddWord(kt, "hola");
+    keysPredictAddWord(kt, "asinine");
+    keysPredictAddWord(kt, "asinine");
     keysPredictPrint(kt);
     // keysPredictAddWord(kt, "");
     // keysPredictAddWord(kt, "b");
@@ -86,5 +87,5 @@ int main() {
 
     // // keysPredict - borrar diccionario
     // keysPredictDelete(kt);
-    // return 0;
+    return 0;
 }
