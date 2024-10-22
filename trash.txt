@@ -1,0 +1,51 @@
+void keysPredictAddWord(struct keysPredict* kt, char* word) {
+    struct node* currentNode = kt->first; // Nodo actual, empieza en el inicio
+    for(int i=0; word[i] != '\0'; i++){
+        char letter = word[i]; // Carácter actual
+
+        if(currentNode == NULL){ // Caso vacío
+            currentNode = addSortedNewNodeInLevel(&kt->first, letter); // Añado la letra actual como nodo, uso & para cumplir con el doble puntero
+            kt->totalKeys++; // Como hay una nueva letra, aumentamos totalKeys
+        }
+        else { // Si hay algo, vemos si la letra actual está en la lista en la que estamos parados
+            struct node* coincidence = findNodeInLevel(&currentNode, letter); // Analizamos la coincidencia
+            if (coincidence == NULL){ // Si no hay coincidencia...
+                currentNode = addSortedNewNodeInLevel(&currentNode, letter); // ...tenemos una nueva letra para añadir a este nivel.
+                kt->totalKeys++;
+            } else { // Sino...
+                currentNode = coincidence; // ...nos posicionamos en el nodo que sea igual a nuestra letra. No hay nuevas letras, así que no sumamos a totalKeys.
+                kt->totalKeys++;
+            }
+        }
+
+        if(i == strLen(word) - 1){ // Si estamos en el final...
+            currentNode->end = 1; // Marcamos el fin
+            currentNode->word = strDup(word);
+            kt->totalWords++; // Una palabra más al total
+        }
+        if (currentNode->down == NULL && word[i + 1] != '\0'){ // Si todavía tenemos que añadir una letra debajo de currentNode...
+            currentNode->down = addSortedNewNodeInLevel(&currentNode->down, word[i+1]); // ...añadimos el caracter que falta
+        }
+        currentNode = currentNode->down; // Bajo un nivel
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+struct keysPredict* kt = keysPredictNew();
+keysPredictAddWord(kt, "a");
+keysPredictAddWord(kt, "actor");
+keysPredictAddWord(kt, "actuar");
+keysPredictAddWord(kt, "sol");
+keysPredictAddWord(kt, "sola");
