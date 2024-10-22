@@ -10,7 +10,7 @@ int strLen(char* src) {
 
 char* strDup(char* src) {
     int size = strLen(src); // Calculo la longitud de src
-    char* str2 = (char*) malloc(sizeof(char) * size); // Dedico los size espacios de memoria necesarios para copiar src
+    char* str2 = (char*) malloc(sizeof(char) * (size+1)); // Dedico los size espacios de memoria necesarios para copiar src
     for(int i=0; i<size; i++){
         str2[i] = src[i]; // Copio el i-ésimo caracter de mi string
     }
@@ -29,7 +29,7 @@ struct keysPredict* keysPredictNew() {
 
 void keysPredictAddWord(struct keysPredict* kt, char* word) {
     struct node* currentNode = kt->first; // Nodo actual, empieza en el inicio
-    for(int i=0; word[i] != 0; i++){
+    for(int i=0; word[i] != '\0'; i++){
         char letter = word[i]; // Carácter actual
 
         if(currentNode == NULL){ // Caso vacío
@@ -43,17 +43,17 @@ void keysPredictAddWord(struct keysPredict* kt, char* word) {
                 kt->totalKeys++;
             } else { // Sino...
                 currentNode = coincidence; // ...nos posicionamos en el nodo que sea igual a nuestra letra. No hay nuevas letras, así que no sumamos a totalKeys.
+                kt->totalKeys++;
             }
         }
 
         if(i == strLen(word) - 1){ // Si estamos en el final...
-            if(word[i] == '\0'){ // ... y llegamos al fin de word...
-                currentNode->end = 1; // Marcamos el fin
-                currentNode->word = word;
-                kt->totalWords++; // Una palabra más al total
-            } else if (currentNode->down == NULL){ // Como no se cumplió lo anterior, tenemos que añadir una letra debajo de currentNode
-                currentNode->down = addSortedNewNodeInLevel(&currentNode->down, word[i+1]); // Añadimos el caracter que falta
-            }
+            currentNode->end = 1; // Marcamos el fin
+            currentNode->word = strDup(word);
+            kt->totalWords++; // Una palabra más al total
+        }
+        if (currentNode->down == NULL && word[i + 1] != '\0'){ // Si todavía tenemos que añadir una letra debajo de currentNode...
+            currentNode->down = addSortedNewNodeInLevel(&currentNode->down, word[i+1]); // ...añadimos el caracter que falta
         }
         currentNode = currentNode->down; // Bajo un nivel
     }
