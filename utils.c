@@ -51,15 +51,39 @@ void keysPredictAddWord(struct keysPredict* kt, char* word) {
 
 
 void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
-    kt->totalWords--; // Quito una palabra de la cantidad total
+    struct node** currentNodePtr = &kt->first; // apuntamos al primer nodo
 
-    // COMPLETAR
+    for (int i = 0; i < strLen(word); i++) { // Por cada carácter...
+        char letter = word[i]; // Letra actual
+        struct node* foundNode = findNodeInLevel(currentNodePtr, letter); // Busco si la letra existe como nodo
+
+        if (foundNode->end == 1 && i == strLen(word) - 1) { //
+            foundNode->word = 0;
+            foundNode->end = 0;
+            kt->totalWords--;
+            kt->totalKeys -= strLen(word);
+        }
+        currentNodePtr = &foundNode->down; // Bajamos al siguiente nivel
+    }
 }
 
 struct node* keysPredictFind(struct keysPredict* kt, char* word) {
+    struct node** currentNodePtr = &kt->first; // apuntamos al primer nodo
+    if (currentNodePtr == NULL) {
+                return NULL; // Si está vacío devolvemos NULL
+            }
+    for (int i = 0; i < strLen(word); i++) { // Por cada carácter...
+        char letter = word[i]; // Letra actual
+        struct node* foundNode = findNodeInLevel(currentNodePtr, letter); // Busco si la letra existe como nodo
+        if (foundNode == NULL) {
+                    return NULL; // Si no se encuentra la letra devolvemos NULL
+                }
+        if (foundNode->word == word && i == strLen(word) - 1){
+            return foundNode;
+        }
 
-    // COMPLETAR
-
+        currentNodePtr = &foundNode->down; // Bajamos al siguiente nivel
+    }
     return 0;
 }
 

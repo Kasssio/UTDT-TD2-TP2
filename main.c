@@ -41,19 +41,15 @@ int main() {
 
     // keysPredict
     struct keysPredict* kt = keysPredictNew();
-    // keysPredict - crear un diccionario
-    keysPredictAddWord(kt, "asinine");
-    keysPredictAddWord(kt, "asinine");
+    keysPredictAddWord(kt, "mion");
+    keysPredictAddWord(kt, "miau");
+    keysPredictAddWord(kt, "geto");
+    keysPredictAddWord(kt, "gato");
     keysPredictPrint(kt);
-    // keysPredictAddWord(kt, "");
-    // keysPredictAddWord(kt, "b");
-    // keysPredictAddWord(kt, "ab");
-    // keysPredictAddWord(kt, "abfff");
-    // keysPredictAddWord(kt, "abfgato");
-    // keysPredictAddWord(kt, "bebe");
-    // keysPredictAddWord(kt, "pata");
-    // keysPredictPrint(kt);
+    struct node* nodito = keysPredictFind(kt, "geto");
+    printf("%s\n", nodito->word);
 
+    // keysPredict - crear un diccionario
     // // keysPredict - listar todas las palabras
     // char** words;
     // int wordsCount;
