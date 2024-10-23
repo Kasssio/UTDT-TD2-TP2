@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <string.h>
 
 int strLen(char* src) {
     int len = 0; // Longitud
@@ -15,6 +16,31 @@ char* strDup(char* src) {
         str2[i] = src[i]; // Copio el i-ésimo caracter de mi string
     }
     return str2;
+}
+
+void countWords(struct node* node, int* count){
+    if(node == NULL){
+        return;
+    }
+    if(node->end == 1){
+        (*count)++;
+        printf("Cantidad de palabras encontradas: %d\n", *count);
+
+    }
+    countWords(node->next, count);
+    countWords(node->down, count);
+}
+
+void storeWordsInArray(struct node* node, char** stringsArray, int* i){ // Creamos una función auxiliar recursiva que nos va a ayudar a almacenar los strings que estén debajo y delante del prefijo
+    if(node == NULL){ // Caso base
+        return;
+    }
+    if(node->end == 1){
+        stringsArray[*i] = strDup(node->word);
+        (*i)++;
+    }
+    storeWordsInArray(node->next, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos a la derecha
+    storeWordsInArray(node->down, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos para abajo
 }
 
 // Keys Predict
@@ -68,32 +94,50 @@ void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
 }
 
 struct node* keysPredictFind(struct keysPredict* kt, char* word) {
-    struct node** currentNodePtr = &kt->first; // apuntamos al primer nodo
-    if (currentNodePtr == NULL) {
-                return NULL; // Si está vacío devolvemos NULL
-            }
-    for (int i = 0; i < strLen(word); i++) { // Por cada carácter...
-        char letter = word[i]; // Letra actual
-        struct node* foundNode = findNodeInLevel(currentNodePtr, letter); // Busco si la letra existe como nodo
-        if (foundNode == NULL) {
-                    return NULL; // Si no se encuentra la letra devolvemos NULL
-                }
-        if (foundNode->word == word && i == strLen(word) - 1){
-            return foundNode;
-        }
-
-        currentNodePtr = &foundNode->down; // Bajamos al siguiente nivel
+    if (kt == NULL) {
+        return NULL;
     }
-    return 0;
+    struct node* current = kt->first;
+    int len = strLen(word);
+
+    for (int i = 0; i < len; i++) {
+        current = findNodeInLevel(&current, word[i]); // Busco si el carácter actual existe como nodo en este nivel
+        if (current == NULL) { // Si no existe...
+            return NULL; // No retornamos nada
+        }
+        if (i == len - 1 && current->end == 1 && strcmp(current->word, word) == 0) { // Si estamos en la ultima letra y su palabra coincide con word...
+            return current; // ...devolvemos el nodo
+        }
+        current = current->down; // Bajamos un nivel
+    }
+    return NULL; // Si nunca encontramos la palabra
 }
+
+
 
 char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount) {
-
-    // COMPLETAR
-
-    return 0;
+    // tomando el caso de test que esta escrito en main.c, la idea es que le pasemos como prefijo "gat", y que retorne en un arreglo lo siguiente:
+    // {"gata","gate","gati","gato","gatubela"}.
+    // encuentro "gata", hago una copia de ese char y lo almaceno en el arreglo.
+    int len = strLen(partialWord);
+    if (kt == NULL){
+        return 0;
+    }
+    struct node* current = kt->first;
+    for(int i=0;partialWord[i] != 0;i++){
+        current = findNodeInLevel(&current, partialWord[i]);
+        if (current == NULL){
+            return NULL;
+        }
+        current = current->down;
+    }
+    *wordsCount = 0;
+    countWords(current, wordsCount);
+    char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
+    int* count = 0;
+    storeWordsInArray(current, strings, count);
+    return strings;
 }
-
 int keysPredictCountWordAux(struct node* n) {
     return 0;
     // COMPLETAR
