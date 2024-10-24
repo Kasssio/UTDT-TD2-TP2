@@ -15,6 +15,7 @@ char* strDup(char* src) {
     for(int i=0; i<size; i++){
         str2[i] = src[i]; // Copio el i-ésimo caracter de mi string
     }
+    str2[size] = '\0';
     return str2;
 }
 
@@ -24,8 +25,7 @@ void countWords(struct node* node, int* count){
     }
     if(node->end == 1){
         (*count)++;
-        printf("Cantidad de palabras encontradas: %d\n", *count);
-
+        printf("count vale %i\n", *count);
     }
     countWords(node->next, count);
     countWords(node->down, count);
@@ -36,7 +36,9 @@ void storeWordsInArray(struct node* node, char** stringsArray, int* i){ // Cream
         return;
     }
     if(node->end == 1){
+        printf("Se supone que mi palabra actual es %s\n", node->word);
         stringsArray[*i] = strDup(node->word);
+        printf("La palabra almacenada en stringsArray es: %s\n",stringsArray[*i]);
         (*i)++;
     }
     storeWordsInArray(node->next, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos a la derecha
@@ -105,7 +107,7 @@ struct node* keysPredictFind(struct keysPredict* kt, char* word) {
         if (current == NULL) { // Si no existe...
             return NULL; // No retornamos nada
         }
-        if (i == len - 1 && current->end == 1 && strcmp(current->word, word) == 0) { // Si estamos en la ultima letra y su palabra coincide con word...
+        if (i == len - 1 && current->end == 1) { // Si estamos en la ultima letra y su palabra coincide con word...
             return current; // ...devolvemos el nodo
         }
         current = current->down; // Bajamos un nivel
@@ -124,18 +126,20 @@ char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount
         return 0;
     }
     struct node* current = kt->first;
-    for(int i=0;partialWord[i] != 0;i++){
+    for(int i=0;partialWord[i] != '\0';i++){
         current = findNodeInLevel(&current, partialWord[i]);
         if (current == NULL){
             return NULL;
         }
         current = current->down;
     }
+
     *wordsCount = 0;
     countWords(current, wordsCount);
+    printf("wordsCount vale %i\n",*wordsCount);
     char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
-    int* count = 0;
-    storeWordsInArray(current, strings, count);
+    int count = 0;
+    storeWordsInArray(current, strings, &count);
     return strings;
 }
 int keysPredictCountWordAux(struct node* n) {

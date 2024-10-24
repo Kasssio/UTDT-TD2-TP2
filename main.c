@@ -38,23 +38,9 @@ int main() {
     printf("strDup(\"hola\") -> \"%s\"\n", dup);
     free(dup);
     printf("\n");
-    int* numero = 0;
+    int numero = 0;
     // keysPredict
     struct keysPredict* kt = keysPredictNew();
-    keysPredictAddWord(kt, "gata");
-    keysPredictAddWord(kt, "gate");
-    keysPredictAddWord(kt, "gati");
-    keysPredictAddWord(kt, "gato");
-    keysPredictAddWord(kt, "mago");
-    keysPredictAddWord(kt, "wfaw");
-    keysPredictAddWord(kt, "pwklero");
-    keysPredictAddWord(kt, "magwewe");
-    keysPredictAddWord(kt, "gatubela");
-
-    char **resultado = keysPredictRun(kt,"gat",numero);
-    printf("%s", *resultado);
-
-
     // keysPredict - crear un diccionario
     // // keysPredict - listar todas las palabras
     // char** words;
