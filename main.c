@@ -20,13 +20,6 @@ void findAndPrintAll(struct keysPredict* kt, char* word ) {
 }
 
 int main() {
-
-    // COMPLETAR
-
-    // A Continuacion dejamos algunos ejemplos de como
-    // llamar a las funciones pedidas. Este codigo debe
-    // ser borrado / modificado.
-
     // strLen
     int len = strLen("hola");
     printf("strLen(\"hola\") -> \"%i\"\n", len); //MODIFICADO
@@ -40,8 +33,8 @@ int main() {
     printf("strLen(\"Ñ\") -> \"%i\"\n", len); //String de un caracter.
     printf("\n");
 
-    len = strLen("0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"); //27*2+10 = 64 Porque la "ñ" y la "Ñ" ocupan doble espacio?
-    printf("strLen(\"0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ\") -> \"%i\"\n", len); //String que incluya todos los caracteres alfanumericos.
+    len = strLen("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    printf("strLen(\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") -> \"%i\"\n", len); //String que incluya todos los caracteres alfanumericos.
     printf("\n");
 
     len = strLen("");
@@ -101,7 +94,7 @@ int main() {
 
     //Y si lo hacemos con un string vacio o con un string tal que ninguna palabra empiece asi
     keysPredictRun(kt, "", wordsCount);
-    keysPredictRun(kt, "ñoq", wordsCount);
+    keysPredictRun(kt, "noq", wordsCount);
     keysPredictRun(kt, "RIN", wordsCount);
     keysPredictRun(kt, " ca", wordsCount);
 
