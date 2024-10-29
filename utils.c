@@ -142,16 +142,17 @@ char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount
     storeWordsInArray(current, strings, &count);
     return strings;
 }
-int keysPredictCountWordAux(struct node* n) {
-    return 0;
-    // COMPLETAR
-}
 
 char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
-
-    // COMPLETAR
-
-    return 0;
+    if (kt == NULL){
+      return NULL;
+    }
+    wordsCount = 0;
+    countWords(kt->first, wordsCount);
+    char** wordList = (char**) malloc(sizeof(char*) * *wordsCount);
+    int count = 0;
+    storeWordsInArray(kt->first, wordList, &count);
+    return wordList;
 }
 
 void keysPredictDelete(struct keysPredict* kt) {
