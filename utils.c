@@ -1,6 +1,8 @@
 #include "utils.h"
 #include <string.h>
 
+// Funciones auxiliares
+// Esta función cuenta la longitud de un string, avanzando carácter por carácter hasta llegar al carácter nulo '\0'
 int strLen(char* src) {
     int len = 0; // Longitud
     while (src[len] != '\0'){ // Mientras el carácter actual no sea el nulo, incrementar a len en 1
@@ -9,16 +11,18 @@ int strLen(char* src) {
     return len;
 }
 
+// strDup dedica la cantidad de espacios de memoria necesarios para almacenar una copia de src con el caractér nulo incluído
 char* strDup(char* src) {
     int size = strLen(src); // Calculo la longitud de src
     char* str2 = (char*) malloc(sizeof(char) * (size+1)); // Dedico los size espacios de memoria necesarios para copiar src
     for(int i=0; i<size; i++){
         str2[i] = src[i]; // Copio el i-ésimo caracter de mi string
     }
-    str2[size] = '\0';
+    str2[size] = '\0'; // Añado el caracter nulo
     return str2;
 }
 
+// countWords es una función recursiva que busca todas las palabras en una lista de nodos, bajando con down y con next
 void countWords(struct node* node, int* count){
     if(node == NULL){
         return;
@@ -31,6 +35,7 @@ void countWords(struct node* node, int* count){
     countWords(node->down, count);
 }
 
+// storeWordsInArray almacena recursivamente en un arreglo de punteros a strings todas las palabras que existan desde el primer nodo pasado por parámetro
 void storeWordsInArray(struct node* node, char** stringsArray, int* i){ // Creamos una función auxiliar recursiva que nos va a ayudar a almacenar los strings que estén debajo y delante del prefijo
     if(node == NULL){ // Caso base
         return;
@@ -55,6 +60,9 @@ struct keysPredict* keysPredictNew() {
     return kt;
 }
 
+// keysPredictAddWord busca, por iteración, la letra actual en la lista de nodos en la que estemos parados.
+// Si existe, nos paramos en la letra y seguimos avanzando.
+// Sino, añadimos la letra como nodo, nos movemos a ese nodo y seguimos buscando.
 void keysPredictAddWord(struct keysPredict* kt, char* word) {
     struct node** currentNodePtr = &kt->first; // apuntamos al primer nodo
 
@@ -77,7 +85,7 @@ void keysPredictAddWord(struct keysPredict* kt, char* word) {
     }
 }
 
-
+// keysPredictRemoveWord va buscando nodo por nodo la palabra pasada por parámetro. Una vez que la encuentra libera la memoria del nodo que la contiene.
 void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
     struct node** currentNodePtr = &kt->first; // apuntamos al primer nodo
 
@@ -95,6 +103,7 @@ void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
     }
 }
 
+// keysPredictFind va buscando caracter por caracter la palabra pasada por parámetro. Si encuentra todos los caracteres,
 struct node* keysPredictFind(struct keysPredict* kt, char* word) {
     if (kt == NULL) {
         return NULL;
@@ -105,22 +114,21 @@ struct node* keysPredictFind(struct keysPredict* kt, char* word) {
     for (int i = 0; i < len; i++) {
         current = findNodeInLevel(&current, word[i]); // Busco si el carácter actual existe como nodo en este nivel
         if (current == NULL) { // Si no existe...
-            return NULL; // No retornamos nada
+            return NULL; // ...no retornamos nada
         }
-        if (i == len - 1 && current->end == 1) { // Si estamos en la ultima letra y su palabra coincide con word...
+        if (i == len - 1 && current->end == 1) { // Si estamos en la última letra y estamos el fin de una palabra...
             return current; // ...devolvemos el nodo
         }
         current = current->down; // Bajamos un nivel
     }
-    return NULL; // Si nunca encontramos la palabra
+    return NULL; // Si nunca encontramos la palabra retornamos NULL
 }
 
 
-
+// keysPredictRun utiliza las funciones recursivas wordsCount y storeWordsInArray para contar y listar todas las palabras que existan a partir del prefijo pasado por parámetro.
+// Iteramos hasta encontrar todo el prefijo en el keysPredict, y de ahí en adelante usamos storeWordsInArray para almacenar todas las palabras encontradas en el "árbol" de nodos."
 char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount) {
-    // tomando el caso de test que esta escrito en main.c, la idea es que le pasemos como prefijo "gat", y que retorne en un arreglo lo siguiente:
-    // {"gata","gate","gati","gato","gatubela"}.
-    // encuentro "gata", hago una copia de ese char y lo almaceno en el arreglo.
+
     int len = strLen(partialWord);
     if (kt == NULL){
         return 0;
@@ -143,6 +151,8 @@ char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount
     return strings;
 }
 
+// keysPredictListAll hace y usa lo mismo que keysPredictRun, sólo que sin prefijo,
+// es decir, recorre el keysPredict completo y almacena en un arreglo de punteros a strings todas las palabras encontradas, sin restricciones
 char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
     if (kt == NULL){
       return NULL;
@@ -184,6 +194,7 @@ void keysPredictPrintAux(struct node* n, int level) {
 
 // Auxiliar functions
 
+// en findNodeInLevel buscamos la posición de nuestro caracter actual en el alfabeto
 int findPosInAlphabet(char character){ // Esta función nos permite encontrar la posición del caracter en el abecedario
     int pos = 0;
     char* alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -195,6 +206,8 @@ int findPosInAlphabet(char character){ // Esta función nos permite encontrar la
     return 26;
 }
 
+// findNodeInLevel recorre cada nodo y se fija si su caracter coincide con el pasado por parámetro. Si se cumple devuelve ese nodo.
+// Sino, no devuelve nada.
 struct node* findNodeInLevel(struct node** list, char character) {
     struct node* lista = *list; // Hago una reasignación de la lista (desreferenciamos el doble puntero ya que está de más)
     while(lista != NULL){ // Recorre cada nodo en la lista hasta llegar a 0
@@ -206,6 +219,11 @@ struct node* findNodeInLevel(struct node** list, char character) {
     return NULL; // Retornamos 0 si no encontramos ninguna coincidencia
 }
 
+// addSortedNewNodeInLevel se ocupa de añadir un nuevo nodo en una lista de nodos respetando el orden alfabético por caracter.
+// Hay tres posibles casos: que el nuevo nodo tenga el caracter más "chico" en la lista, que esté entre dos nodos y que sea el último.
+// Para ver si es el más chico comparamos con el primer nodo, y si es menor lo añadimos al principio y hacemos que apunte al siguiente.
+// Para añadir entre dos nodos vemos si el nodo actual es menor al newNode y si el siguiente al nodo actual es mayor que newNode.
+// Si es el caracter más grande en la lista, significa que el ciclo fue ignorado, así que hacemos que el último nodo de la lista apunte a newNode.
 struct node* addSortedNewNodeInLevel(struct node** list, char character) {
     struct node* newNode = (struct node*) malloc(sizeof(struct node));
     newNode->character = character;
@@ -239,6 +257,7 @@ struct node* addSortedNewNodeInLevel(struct node** list, char character) {
     return *list;
 }
 
+// deleteArrayOfWords limpia la memoria en cada índice del arreglo de palabras.
 void deleteArrayOfWords(char** words, int wordsCount) {
     for (int i=0; i<wordsCount; i++){
         free(words[i]);
