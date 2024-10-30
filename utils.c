@@ -29,7 +29,6 @@ void countWords(struct node* node, int* count){
     }
     if(node->end == 1){
         (*count)++;
-        printf("count vale %i\n", *count);
     }
     countWords(node->next, count);
     countWords(node->down, count);
@@ -41,9 +40,7 @@ void storeWordsInArray(struct node* node, char** stringsArray, int* i){ // Cream
         return;
     }
     if(node->end == 1){
-        printf("Se supone que mi palabra actual es %s\n", node->word);
         stringsArray[*i] = strDup(node->word);
-        printf("La palabra almacenada en stringsArray es: %s\n",stringsArray[*i]);
         (*i)++;
     }
     storeWordsInArray(node->next, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos a la derecha
@@ -127,6 +124,7 @@ struct node* keysPredictFind(struct keysPredict* kt, char* word) {
 
 // keysPredictRun utiliza las funciones recursivas wordsCount y storeWordsInArray para contar y listar todas las palabras que existan a partir del prefijo pasado por parámetro.
 // Iteramos hasta encontrar todo el prefijo en el keysPredict, y de ahí en adelante usamos storeWordsInArray para almacenar todas las palabras encontradas en el "árbol" de nodos."
+// Al final veo si el prefijo es una palabra en el keysPredict. Si esto ocurre empezamos a buscar desde la última letra, y sino vamos desde la siguiente.
 char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount) {
 
     int len = strLen(partialWord);
@@ -134,21 +132,31 @@ char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount
         return 0;
     }
     struct node* current = kt->first;
+    struct node* prev = NULL;
     for(int i=0;partialWord[i] != '\0';i++){
         current = findNodeInLevel(&current, partialWord[i]);
         if (current == NULL){
             return NULL;
         }
+        prev = current;
         current = current->down;
     }
-
-    *wordsCount = 0;
-    countWords(current, wordsCount);
-    printf("wordsCount vale %i\n",*wordsCount);
-    char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
-    int count = 0;
-    storeWordsInArray(current, strings, &count);
-    return strings;
+    if(prev->character == partialWord[len-1] && prev->end == 1){
+        *wordsCount = 0;
+        countWords(prev, wordsCount);
+        char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
+        int count = 0;
+        storeWordsInArray(prev, strings, &count);
+        return strings;
+    }
+    else{
+        *wordsCount = 0;
+        countWords(current, wordsCount);
+        char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
+        int count = 0;
+        storeWordsInArray(current, strings, &count);
+        return strings;
+    }
 }
 
 // keysPredictListAll hace y usa lo mismo que keysPredictRun, sólo que sin prefijo,
