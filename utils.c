@@ -5,7 +5,7 @@
 // Esta función cuenta la longitud de un string, avanzando carácter por carácter hasta llegar al carácter nulo '\0'
 int strLen(char* src) {
     int len = 0; // Longitud
-    while (src[len] != '\0'){ // Mientras el carácter actual no sea el nulo, incrementar a len en 1
+    while (src[len] != '\0' && src[len] != '\n'){ // Mientras el carácter actual no sea el nulo, incrementar a len en 1
         len++;
     }
     return len;
@@ -123,40 +123,39 @@ struct node* keysPredictFind(struct keysPredict* kt, char* word) {
 
 
 // keysPredictRun utiliza las funciones recursivas wordsCount y storeWordsInArray para contar y listar todas las palabras que existan a partir del prefijo pasado por parámetro.
-// Iteramos hasta encontrar todo el prefijo en el keysPredict, y de ahí en adelante usamos storeWordsInArray para almacenar todas las palabras encontradas en el "árbol" de nodos."
-// Al final veo si el prefijo es una palabra en el keysPredict. Si esto ocurre empezamos a buscar desde la última letra, y sino vamos desde la siguiente.
+// Iteramos hasta encontrar todo el prefijo en el keysPredict, y de ahí en adelante usamos storeWordsInArray para almacenar todas las palabras encontradas en el "árbol" de nodos.
+//
+//
 char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount) {
-
+    *wordsCount = 0;
     int len = strLen(partialWord);
     if (kt == NULL){
         return 0;
     }
     struct node* current = kt->first;
-    struct node* prev = NULL;
+    int prefixExists = 0;
     for(int i=0;partialWord[i] != '\0';i++){
         current = findNodeInLevel(&current, partialWord[i]);
         if (current == NULL){
             return NULL;
         }
-        prev = current;
+        if (i == len-1 && current->end == 1){
+            prefixExists = 1;
+        }
         current = current->down;
     }
-    if(prev->character == partialWord[len-1] && prev->end == 1){
-        *wordsCount = 0;
-        countWords(prev, wordsCount);
-        char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
-        int count = 0;
-        storeWordsInArray(prev, strings, &count);
-        return strings;
+    countWords(current, wordsCount);
+    int count = 0;
+    if(prefixExists){
+        (*wordsCount)++;
+        count++;
     }
-    else{
-        *wordsCount = 0;
-        countWords(current, wordsCount);
-        char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
-        int count = 0;
-        storeWordsInArray(current, strings, &count);
-        return strings;
+    char** strings = (char**) malloc(sizeof(char*) * *wordsCount);
+    if(prefixExists){
+        strings[0] = strDup(partialWord);
     }
+    storeWordsInArray(current, strings, &count);
+    return strings;
 }
 
 // keysPredictListAll hace y usa lo mismo que keysPredictRun, sólo que sin prefijo,
@@ -202,21 +201,24 @@ void keysPredictPrintAux(struct node* n, int level) {
 
 // Auxiliar functions
 
-// en findNodeInLevel buscamos la posición de nuestro caracter actual en el alfabeto
+// en findPosInAlphabet buscamos la posición de nuestro caracter actual en el alfabeto
 int findPosInAlphabet(char character){ // Esta función nos permite encontrar la posición del caracter en el abecedario
     int pos = 0;
-    char* alphabet = "abcdefghijklmnopqrstuvwxyz";
-    for(int i = 0; i<26; i++){
+    char* alphabet = " abcdefghijklmn-opqrstuvwxyz";
+    for(int i = 0; i<strLen(alphabet); i++){
         if(alphabet[i] == character){
             return i;
         }
     }
-    return 26;
+    return strLen(alphabet);
 }
 
 // findNodeInLevel recorre cada nodo y se fija si su caracter coincide con el pasado por parámetro. Si se cumple devuelve ese nodo.
 // Sino, no devuelve nada.
 struct node* findNodeInLevel(struct node** list, char character) {
+    if(list == NULL){
+        return NULL;
+    }
     struct node* lista = *list; // Hago una reasignación de la lista (desreferenciamos el doble puntero ya que está de más)
     while(lista != NULL){ // Recorre cada nodo en la lista hasta llegar a 0
         if(lista->character == character){ // Si el caracter del nodo actual coincide con el buscado...

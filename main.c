@@ -39,40 +39,75 @@ int main() {
 
     // Tests de keysPredict
     struct keysPredict* dict = keysPredictNew();
-    int* wordsCount;
-    keysPredictAddWord(dict,"casat");
-    keysPredictAddWord(dict,"casan");
-    keysPredictAddWord(dict,"casal");
+    int wordsCount = 0;
+    keysPredictAddWord(dict,"alfajor");
+    keysPredictAddWord(dict,"canoa");
+    keysPredictAddWord(dict,"rinoceronte");
     keysPredictAddWord(dict,"casa");
-    keysPredictAddWord(dict,"rino");
+    keysPredictAddWord(dict,"noqui");
     keysPredictPrint(dict);
 
-    //keysPredictRemoveWord(dict,"canoa");
+    keysPredictRemoveWord(dict,"canoa");
     keysPredictAddWord(dict,"pato");
     keysPredictPrint(dict);
 
-    char** kPR = keysPredictRun(dict, "c", wordsCount);
+    char** kPR = keysPredictRun(dict, "c", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"c\":\n");
-    for (int i = 0; i < *wordsCount; i++) {
+    for (int i = 0; i < wordsCount; i++) {
         printf("%s\n", kPR[i]);
     }
-
-    kPR = keysPredictRun(dict, "ca", wordsCount);
+    kPR = keysPredictRun(dict, "ca", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"ca\":\n");
-    for (int i = 0; i < *wordsCount; i++) {
+    for (int i = 0; i < wordsCount; i++) {
         printf("%s\n", kPR[i]);
     }
-
-    kPR = keysPredictRun(dict, "casa", wordsCount);
+    kPR = keysPredictRun(dict, "ca", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"casa\":\n");
-    for (int i = 0; i < *wordsCount; i++) {
+    for (int i = 0; i < wordsCount; i++) {
         printf("%s\n", kPR[i]);
     }
-
-    kPR = keysPredictRun(dict, "casas", wordsCount);
+    kPR = keysPredictRun(dict, "casas", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"casas\":\n");
-    for (int i = 0; i < *wordsCount; i++) {
+    for (int i = 0; i < wordsCount; i++) {
         printf("%s\n", kPR[i]);
+    }
+    // keysPredict casos grandes - añadir 100 palabras
+    struct keysPredict* diccionario = keysPredictNew();
+    FILE *file = fopen("./dicc.txt", "r");
+    if (file == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return 1;
+    }
+    char word[20];
+
+    while (fgets(word, sizeof(word),file) != NULL) {
+        keysPredictAddWord(diccionario, word);
+    }
+    keysPredictPrint(diccionario);
+
+    // keysPredict casos grandes - quitar 50 palabras
+    fclose(file);
+    file = fopen("./dicc copy.txt", "r");
+    while (fgets(word, sizeof(word),file) != NULL) {
+        keysPredictRemoveWord(diccionario, word);
+    }
+    keysPredictPrint(diccionario);
+    fclose(file);
+
+    // keysPredict casos grandes - predecir prefijos de dos letras
+    char* alphabet = " abcdefghijklmn-opqrstuvwxyz";
+    char prefix[3];
+
+    for (int i=0; i<strLen(alphabet); i++){
+        for(int j=0; j<strLen(alphabet);j++){
+            prefix[0]= alphabet[i];
+            prefix[1]= alphabet[j];
+            char** dictRun = keysPredictRun(dict, prefix, &wordsCount);
+            printf("Palabras encontradas en dict con el prefijo \"%s\":\n",prefix);
+            for (int k = 0; k < wordsCount; k++) {
+                printf("%s\n", dictRun[k]);
+            }
+        }
     }
     return 0;
 }
