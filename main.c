@@ -50,7 +50,12 @@ int main() {
     keysPredictRemoveWord(dict,"canoa");
     keysPredictAddWord(dict,"pato");
     keysPredictPrint(dict);
-
+    // Tests de keysPredict - keysPredictListAll
+    char** lista = keysPredictListAll(dict, &wordsCount);
+    for (int i = 0; i < dict->totalWords; i++) {
+        printf(" HOALHOLAOHOLA%s\n", lista[i]);
+    }
+    // Tests de keysPredict - keysPredictRun
     char** kPR = keysPredictRun(dict, "c", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"c\":\n");
     for (int i = 0; i < wordsCount; i++) {
@@ -71,6 +76,10 @@ int main() {
     for (int i = 0; i < wordsCount; i++) {
         printf("%s\n", kPR[i]);
     }
+
+    // Tests de keysPredict - keysPredictDelete
+
+
     // keysPredict casos grandes - añadir 100 palabras
     struct keysPredict* diccionario = keysPredictNew();
     FILE *file = fopen("./dicc.txt", "r");
