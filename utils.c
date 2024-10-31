@@ -173,19 +173,34 @@ char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
 }
 
 void keysPredictDelete(struct keysPredict* kt) {
+    int keys = kt -> totalKeys;
+    // int words = kt -> totalWords;
 
-    //struct node** currentNodePtr = &kt->first; // se apunta al primer nodo
-    struct node* current = kt;
-    struct node* siguiente = current -> down;
+    struct node* current = kt -> first; // inicializa en el primer nodo
+    struct node* abajo = current -> down; // apunta al nodo que se encuentra por debajo
+    struct node* siguiente = current -> next; // apunta al nodo siguiente
 
-    while (current -> down != 0){
-        free(current);
-        current = siguiente -> down;
+    while (keys != 0) {
+        if (current -> next != 0 && current -> down != 0){ 
+            current = siguiente; // si tiene tanto siguiente como uno abajo, va por el siguiente
+        }
+
+        else if (current -> next == 0 && current -> down != 0){ 
+            current = abajo; // si unicamente tiene un nodo abajo, sigue por ahi
+        }
+
+        else if (current -> next != 0 && current -> down == 0){
+            current = siguiente; // si unicamente tiene siguiente, sigue por ahi
+        }
+
+        else if (current -> next == 0 && current -> down == 0){
+            clear(current); // una vez que llega a un nodo sin siguiente, ni que tenga abajo, lo borra y vuelve a empezar
+            current = kt;
+            keys--;
+        }
     }
 
-
-    // COMPLETAR
-
+    clear(kt);
     
 }
 
