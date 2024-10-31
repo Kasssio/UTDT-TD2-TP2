@@ -174,8 +174,19 @@ char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
 
 void keysPredictDelete(struct keysPredict* kt) {
 
+    //struct node** currentNodePtr = &kt->first; // se apunta al primer nodo
+    struct node* current = kt;
+    struct node* siguiente = current -> down;
+
+    while (current -> down != 0){
+        free(current);
+        current = siguiente -> down;
+    }
+
+
     // COMPLETAR
 
+    
 }
 
 void keysPredictPrint(struct keysPredict* kt) {
