@@ -1,0 +1,9 @@
+- Indique el porcentaje aproximado de líneas de código del trabajo práctico fueron realizadas con asistencia de una IA.
+    Las funciones no fueron directamente hechas con IA, aunque sí la usamos para buscar algunos errores que no eran inmediatamente visibles. Después corregimos nuestras funciones a través de prints temporales y debugging. Para la lectura de los diccionarios investigamos librerías de lectura de archivos en internet, así que no usamos el predict.c.
+    Asumimos que un 7% de las líneas del utils.c están hechas con la asistencia de una IA.
+- Cómo verificaron que las sugerencias de la IA eran correctas?
+    Para chequear si lo que nos sugerían era correcto, compilábamos el main.c con casos de test de borrador. Si había algún error, implementábamos prints temporales e íbamos debugeando hasta encontrar la línea en la cual estaba el problema, y lo resolvíamos nosotros.
+- ¿Se enfrentaron a alguna dificultad al utilizar las herramientas de IA? ¿Cómo las resolvieron?
+    Había veces que la IA no tenía suficiente contexto sobre el trabajo práctico, así que tuvimos que explicarle cuál era el objetivo de la función en el entorno en el que trabajaba. En base a eso orientaba el funcionamiento de la función que le pedíamos que nos corrija o ayude a arreglar.
+- ¿Consideran que el uso de la IA les ha permitido desarrollar habilidades de programación en C? ¿Por qué?
+    Creemos que la IA nos ayudó a entender cómo funcionan los punteros un poco mejor y nos permitió acelerar la lectura de código y de resolución de problemas. Esto lo hacía respondiendo dudas precisas que le preguntábamos sobre los temas en cuestión.

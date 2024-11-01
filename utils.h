@@ -56,6 +56,8 @@ void storeWordsInArray(struct node* node, char** stringsArray, int* i);
 
 void countWords(struct node* node, int* count);
 
+void deleteAllWords(struct node* n, struct keysPredict* kt);
+
 // --- Strings ----------------------------------------------------------------
 
 int strLen(char* src);

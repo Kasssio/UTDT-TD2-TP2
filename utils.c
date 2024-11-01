@@ -34,6 +34,21 @@ void countWords(struct node* node, int* count){
     countWords(node->down, count);
 }
 
+// Función recursiva que usa un algoritmo similar a storeWordsInArray, recorriendo todo el árbol de nodos y liberando cada nodo y palabra.
+void deleteAllWords(struct node* n, struct keysPredict* kt){
+    if (n == NULL){
+        return;
+    }
+    deleteAllWords(n->next,kt);
+    deleteAllWords(n->down,kt);
+    if (n->word != NULL){
+        free(n->word);
+        kt->totalWords--;
+    }
+
+    free(n);
+    kt->totalKeys--;
+}
 // storeWordsInArray almacena recursivamente en un arreglo de punteros a strings todas las palabras que existan desde el primer nodo pasado por parámetro
 void storeWordsInArray(struct node* node, char** stringsArray, int* i){ // Creamos una función auxiliar recursiva que nos va a ayudar a almacenar los strings que estén debajo y delante del prefijo
     if(node == NULL){ // Caso base
@@ -71,6 +86,7 @@ void keysPredictAddWord(struct keysPredict* kt, char* word) {
             *currentNodePtr = addSortedNewNodeInLevel(currentNodePtr, letter); // ...agrego el nodo
             foundNode = findNodeInLevel(currentNodePtr,letter); // Me posiciono en el nuevo nodo
             kt->totalKeys++;
+
         }
 
         if (i == strLen(word) - 1 && foundNode->end != 1) { // Si estamos en el final de la palabra...
@@ -94,7 +110,6 @@ void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
             foundNode->word = 0;
             foundNode->end = 0;
             kt->totalWords--;
-            kt->totalKeys -= strLen(word);
         }
         currentNodePtr = &foundNode->down; // Bajamos al siguiente nivel
     }
@@ -158,13 +173,13 @@ char** keysPredictRun(struct keysPredict* kt, char* partialWord, int* wordsCount
     return strings;
 }
 
-// keysPredictListAll hace y usa lo mismo que keysPredictRun, sólo que sin prefijo,
+// keysPredictListAll hace y usa lo mismo que keysPredictRun, sólo que sin prefijo.
 // es decir, recorre el keysPredict completo y almacena en un arreglo de punteros a strings todas las palabras encontradas, sin restricciones
 char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
     if (kt == NULL){
       return NULL;
     }
-    wordsCount = 0;
+    *wordsCount = 0;
     countWords(kt->first, wordsCount);
     char** wordList = (char**) malloc(sizeof(char*) * *wordsCount);
     int count = 0;
@@ -173,35 +188,7 @@ char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
 }
 
 void keysPredictDelete(struct keysPredict* kt) {
-    int keys = kt -> totalKeys;
-    // int words = kt -> totalWords;
-
-    struct node* current = kt -> first; // inicializa en el primer nodo
-    struct node* abajo = current -> down; // apunta al nodo que se encuentra por debajo
-    struct node* siguiente = current -> next; // apunta al nodo siguiente
-
-    while (keys != 0) {
-        if (current -> next != 0 && current -> down != 0){ 
-            current = siguiente; // si tiene tanto siguiente como uno abajo, va por el siguiente
-        }
-
-        else if (current -> next == 0 && current -> down != 0){ 
-            current = abajo; // si unicamente tiene un nodo abajo, sigue por ahi
-        }
-
-        else if (current -> next != 0 && current -> down == 0){
-            current = siguiente; // si unicamente tiene siguiente, sigue por ahi
-        }
-
-        else if (current -> next == 0 && current -> down == 0){
-            clear(current); // una vez que llega a un nodo sin siguiente, ni que tenga abajo, lo borra y vuelve a empezar
-            current = kt;
-            keys--;
-        }
-    }
-
-    clear(kt);
-    
+    deleteAllWords(kt->first, kt);
 }
 
 void keysPredictPrint(struct keysPredict* kt) {
