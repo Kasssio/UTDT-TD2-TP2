@@ -73,6 +73,7 @@ int main() {
             printf("%s\n\n",kPR[i]);
         }
     }
+    deleteArrayOfWords(kPR, wordsCount);
     kPR = keysPredictRun(dict, "ca", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"ca\": ");
     for (int i = 0; i < wordsCount; i++) {
@@ -83,6 +84,7 @@ int main() {
             printf("%s\n\n",kPR[i]);
         }
     }
+    deleteArrayOfWords(kPR, wordsCount);
     kPR = keysPredictRun(dict, "casa", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"casa\": ");
     for (int i = 0; i < wordsCount; i++) {
@@ -93,6 +95,7 @@ int main() {
             printf("%s\n\n",kPR[i]);
         }
     }
+    deleteArrayOfWords(kPR, wordsCount);
     kPR = keysPredictRun(dict, "casas", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"casas\": ");
     for (int i = 0; i < wordsCount; i++) {
@@ -103,6 +106,7 @@ int main() {
             printf("%s\n\n",kPR[i]);
         }
     }
+    deleteArrayOfWords(kPR, wordsCount);
     keysPredictDelete(dict);
     free(dict);
     // keysPredict casos grandes - añadir 100 palabras
@@ -128,6 +132,7 @@ int main() {
             printf("%s\n\n",lista[i]);
         }
     }
+    deleteArrayOfWords(lista, wordsCount);
     // keysPredict casos grandes - quitar 50 palabras
     fclose(file);
     file = fopen("./dicc copy.txt", "r");
@@ -147,7 +152,7 @@ int main() {
             printf("%s\n\n",lista[i]);
         }
     }
-    free(lista);
+    deleteArrayOfWords(lista, wordsCount);
     // keysPredict casos grandes - predecir prefijos de dos letras
     char* alphabet = " abcdefghijklmn-opqrstuvwxyz";
     char prefix[3];
