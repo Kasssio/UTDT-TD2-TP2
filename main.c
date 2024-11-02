@@ -28,13 +28,19 @@ int main() {
     len = strLen("abcdefghijklmnopqrstuwxyz0123456789");
     printf("La longitud de \"abcdefghijklmnopqrstuwxyz0123456789\" es: %i\n", len);
     // Tests de strDup()
+
     char* copy = strDup("");
     printf("La copia de \" \" es: %s\n\n", copy);
+    free(copy);
+
     copy = strDup("a");
     printf("La copia de \"a\" es: %s\n\n", copy);
+    free(copy);
+
     copy = strDup("abcdefghijklmnopqrstuwxyz0123456789");
     printf("La copia de \"abcdefghijklmnopqrstuwxyz0123456789\" es: %s\n", copy);
     free(copy);
+
     // Tests de keysPredict
     struct keysPredict* dict = keysPredictNew();
     int wordsCount = 0;
@@ -45,7 +51,7 @@ int main() {
     keysPredictAddWord(dict,"noqui");
     keysPredictPrint(dict);
 
-    keysPredictRemoveWord(dict,"canoa");
+    keysPredictRemoveWord(dict,"alfajor");
     keysPredictAddWord(dict,"pato");
     keysPredictPrint(dict);
 
@@ -60,7 +66,7 @@ int main() {
             printf("%s\n\n",lista[i]);
         }
     }
-    free(lista);
+    deleteArrayOfWords(lista, wordsCount);
 
     // Tests de keysPredict - keysPredictRun
     char** kPR = keysPredictRun(dict, "c", &wordsCount);
@@ -108,7 +114,6 @@ int main() {
     }
     deleteArrayOfWords(kPR, wordsCount);
     keysPredictDelete(dict);
-    free(dict);
     // keysPredict casos grandes - añadir 100 palabras
     struct keysPredict* diccionario = keysPredictNew();
     FILE *file = fopen("./dicc.txt", "r");
@@ -156,6 +161,7 @@ int main() {
     // keysPredict casos grandes - predecir prefijos de dos letras
     char* alphabet = " abcdefghijklmn-opqrstuvwxyz";
     char prefix[3];
+    prefix[2] = '\0';
     char** dictRun;
     for (int i=0; i<strLen(alphabet); i++){
         for(int j=0; j<strLen(alphabet);j++){
@@ -172,8 +178,9 @@ int main() {
                 }
             }
             printf("\n");
+            deleteArrayOfWords(dictRun, wordsCount);
         }
     }
-    deleteArrayOfWords(dictRun, wordsCount);
+    keysPredictDelete(diccionario);
     return 0;
 }

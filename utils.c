@@ -107,7 +107,8 @@ void keysPredictRemoveWord(struct keysPredict* kt, char* word) {
         struct node* foundNode = findNodeInLevel(currentNodePtr, letter); // Busco si la letra existe como nodo
 
         if (foundNode->end == 1 && i == strLen(word) - 1) { //
-            foundNode->word = 0;
+            free(foundNode->word);
+            foundNode->word = NULL;
             foundNode->end = 0;
             kt->totalWords--;
         }
@@ -189,6 +190,7 @@ char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
 
 void keysPredictDelete(struct keysPredict* kt) {
     deleteAllWords(kt->first, kt);
+    free(kt);
 }
 
 void keysPredictPrint(struct keysPredict* kt) {
@@ -216,7 +218,6 @@ void keysPredictPrintAux(struct node* n, int level) {
 
 // en findPosInAlphabet buscamos la posición de nuestro caracter actual en el alfabeto
 int findPosInAlphabet(char character){ // Esta función nos permite encontrar la posición del caracter en el abecedario
-    int pos = 0;
     char* alphabet = " abcdefghijklmn-opqrstuvwxyz";
     for(int i = 0; i<strLen(alphabet); i++){
         if(alphabet[i] == character){
@@ -249,6 +250,9 @@ struct node* findNodeInLevel(struct node** list, char character) {
 // Si es el caracter más grande en la lista, significa que el ciclo fue ignorado, así que hacemos que el último nodo de la lista apunte a newNode.
 struct node* addSortedNewNodeInLevel(struct node** list, char character) {
     struct node* newNode = (struct node*) malloc(sizeof(struct node));
+    newNode->end = 0;
+    newNode->word = NULL;
+    newNode->down = NULL;
     newNode->character = character;
     newNode->next = NULL;
 
