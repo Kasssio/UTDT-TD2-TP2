@@ -20,8 +20,6 @@ void findAndPrintAll(struct keysPredict* kt, char* word ) {
 }
 
 int main() {
-    struct keysPredict* kt1 = keysPredictNew();
-    keysPredictPrint(kt1);
     // Tests de strLen()
     int len = strLen("");
     printf("La longitud de \" \" es: %i\n\n", len);
@@ -29,7 +27,6 @@ int main() {
     printf("La longitud de \"a\" es: %i\n\n", len);
     len = strLen("abcdefghijklmnopqrstuwxyz0123456789");
     printf("La longitud de \"abcdefghijklmnopqrstuwxyz0123456789\" es: %i\n", len);
-
     // Tests de strDup()
     char* copy = strDup("");
     printf("La copia de \" \" es: %s\n\n", copy);
@@ -37,7 +34,7 @@ int main() {
     printf("La copia de \"a\" es: %s\n\n", copy);
     copy = strDup("abcdefghijklmnopqrstuwxyz0123456789");
     printf("La copia de \"abcdefghijklmnopqrstuwxyz0123456789\" es: %s\n", copy);
-
+    free(copy);
     // Tests de keysPredict
     struct keysPredict* dict = keysPredictNew();
     int wordsCount = 0;
@@ -63,6 +60,8 @@ int main() {
             printf("%s\n\n",lista[i]);
         }
     }
+    free(lista);
+
     // Tests de keysPredict - keysPredictRun
     char** kPR = keysPredictRun(dict, "c", &wordsCount);
     printf("Palabras encontradas en dict con el prefijo \"c\": ");
@@ -104,7 +103,8 @@ int main() {
             printf("%s\n\n",kPR[i]);
         }
     }
-
+    keysPredictDelete(dict);
+    free(dict);
     // keysPredict casos grandes - añadir 100 palabras
     struct keysPredict* diccionario = keysPredictNew();
     FILE *file = fopen("./dicc.txt", "r");
@@ -147,15 +147,16 @@ int main() {
             printf("%s\n\n",lista[i]);
         }
     }
+    free(lista);
     // keysPredict casos grandes - predecir prefijos de dos letras
     char* alphabet = " abcdefghijklmn-opqrstuvwxyz";
     char prefix[3];
-
+    char** dictRun;
     for (int i=0; i<strLen(alphabet); i++){
         for(int j=0; j<strLen(alphabet);j++){
             prefix[0]= alphabet[i];
             prefix[1]= alphabet[j];
-            char** dictRun = keysPredictRun(diccionario, prefix, &wordsCount);
+            dictRun = keysPredictRun(diccionario, prefix, &wordsCount);
             printf("Palabras encontradas en dict con el prefijo \"%s\": ",prefix);
             for (int k = 0; k < wordsCount; k++) {
                 if(k<wordsCount-1){
@@ -168,8 +169,7 @@ int main() {
             printf("\n");
         }
     }
-    // Tests de keysPredict - keysPredictDelete
-    keysPredictDelete(dict);
-    printf("Dict ahora debería estar vacío. Supuestamente está bien que tire segmentation fault al printearlo.\n");
+    keysPredictDelete(diccionario);
+    free(diccionario);
     return 0;
 }

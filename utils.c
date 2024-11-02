@@ -58,8 +58,8 @@ void storeWordsInArray(struct node* node, char** stringsArray, int* i){ // Cream
         stringsArray[*i] = strDup(node->word);
         (*i)++;
     }
-    storeWordsInArray(node->next, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos a la derecha
     storeWordsInArray(node->down, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos para abajo
+    storeWordsInArray(node->next, stringsArray, i); // Llamamos recursivamente a la función, sólo que desplazándonos a la derecha
 }
 
 // Keys Predict
