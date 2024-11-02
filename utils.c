@@ -188,6 +188,7 @@ char** keysPredictListAll(struct keysPredict* kt, int* wordsCount) {
     return wordList;
 }
 
+// keysPredictDelete utiliza recursión para recorrer y liberar todos los nodos en el keysPredict pasado por parámetro. Utiliza la función deleteAllWords.
 void keysPredictDelete(struct keysPredict* kt) {
     deleteAllWords(kt->first, kt);
     free(kt);
