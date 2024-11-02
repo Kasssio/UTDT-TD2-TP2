@@ -174,7 +174,6 @@ int main() {
             printf("\n");
         }
     }
-    keysPredictDelete(diccionario);
-    free(diccionario);
+    deleteArrayOfWords(dictRun, wordsCount);
     return 0;
 }
